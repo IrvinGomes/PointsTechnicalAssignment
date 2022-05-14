@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Bracket, Brackets } from 'src/app/model/bracket';
+import { Brackets } from 'src/app/model/bracket';
 import { BracketsService } from 'src/app/services/brackets/brackets.service';
 
 @Component({
@@ -8,27 +8,42 @@ import { BracketsService } from 'src/app/services/brackets/brackets.service';
   styleUrls: ['./calculation.component.scss'],
 })
 export class CalculationComponent implements OnInit {
-  constructor(private brackestService: BracketsService) {}
+  constructor(private brackestService: BracketsService) { }
 
   brackets!: Brackets;
-  value: any;
+  value: number = 0;
   payments: any;
   total: number = 0;
 
-  ngOnInit(): void {
-    this.brackestService.get().subscribe((result) => {
-      this.brackets = result;
-    });
-    // this.brackestService.getByYear('2020').subscribe((result) => {
-    //   console.log('by year', result);
-    // });
-  }
+  byYear: boolean = false;
+  year: number = new Date().getFullYear() - 1;
+  maxYear: number = new Date().getFullYear() - 1;
+
+  ngOnInit(): void { }
 
   calculate() {
     this.payments = new Array();
-    this.total = 0
+    this.total = 0;
+
+    if (this.byYear) {
+      this.brackestService
+        .getByYear(this.year.toString()).subscribe((result) => {
+          this.brackets = result;
+          this.createValues();
+        }, error => {
+          this.handleError(error)
+
+        });
+    } else {
+      this.brackestService.get().subscribe((result) => {
+        this.brackets = result;
+        this.createValues();
+      });
+    }
+  }
+
+  createValues() {
     var localValue = this.value;
-    
     for (var i = this.brackets.tax_brackets.length - 1; i >= 0; i--) {
       if (localValue > this.brackets.tax_brackets[i].min) {
         var moreThan = localValue - this.brackets.tax_brackets[i].min;
@@ -44,5 +59,14 @@ export class CalculationComponent implements OnInit {
     this.payments.forEach((element: any) => {
       this.total += parseInt(element.owed);
     });
+  }
+
+  handleError(error: any) {
+    if (confirm(`Unfortunately, we had an ${error.error.errors[0].code}: ${error.error.errors[0].message}\nWould you like to try again?`)){
+      this.calculate()
+    }else{
+      //do nothing
+    }
+      
   }
 }
