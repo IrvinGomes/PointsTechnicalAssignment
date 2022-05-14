@@ -9,7 +9,7 @@ The purpose is to develop an income tax calculator to help illustrate how margin
 ## Running the project
 
 * Clone this repository
-* Navigate to the folder **Tax Calculator** using your windowns comand line
+* Navigate to the folder **Tax Calculator** using your windowns command line
 * Run the command ng serve -o
 
 ## Project specifications
