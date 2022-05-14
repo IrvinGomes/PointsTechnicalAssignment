@@ -19,9 +19,12 @@ export class CalculationComponent implements OnInit {
   year: number = new Date().getFullYear() - 1;
   maxYear: number = new Date().getFullYear() - 1;
 
+  finished: boolean | undefined = undefined
+
   ngOnInit(): void { }
 
   calculate() {
+    this.finished = false
     this.payments = new Array();
     this.total = 0;
 
@@ -59,14 +62,16 @@ export class CalculationComponent implements OnInit {
     this.payments.forEach((element: any) => {
       this.total += parseInt(element.owed);
     });
+
+    this.finished = true
   }
 
   handleError(error: any) {
-    if (confirm(`Unfortunately, we had an ${error.error.errors[0].code}: ${error.error.errors[0].message}\nWould you like to try again?`)){
+    if (confirm(`Unfortunately, we had an ${error.error.errors[0].code}: ${error.error.errors[0].message}\nWould you like to try again?`)) {
       this.calculate()
-    }else{
+    } else {
       //do nothing
     }
-      
+
   }
 }

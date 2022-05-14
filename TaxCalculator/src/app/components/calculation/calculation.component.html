@@ -18,17 +18,22 @@
         <button mat-stroked-button (click)="calculate()">Calculate</button>
     </div>
 
-    <div class="result">
+    <div class="result" *ngIf="finished!=undefined">
         <h2>Tax Result</h2>
-        <p><strong>Salary</strong>: {{value|currency}}</p>
-        <br>
-        <div *ngFor="let payment of payments">
-            <p>Value under rate {{payment.rate}}%: {{payment.value | currency}}</p>
-            <p>Will pay: {{payment.owed | currency}}</p>
+
+        <mat-spinner *ngIf="!finished"></mat-spinner>
+
+        <div *ngIf="finished">
+            <p><strong>Salary</strong>: {{value|currency}}</p>
             <br>
+            <div *ngFor="let payment of payments">
+                <p>Value under rate {{payment.rate}}%: {{payment.value | currency}}</p>
+                <p>Will pay: {{payment.owed | currency}}</p>
+                <br>
+            </div>
+            <br>
+            <p><strong>Total owed: </strong>{{total|currency}}</p>
         </div>
-        <br>
-        <p><strong>Total owed: </strong>{{total|currency}}</p>
     </div>
 
 </div>
